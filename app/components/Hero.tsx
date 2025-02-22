@@ -65,9 +65,7 @@ const Hero = () => {
         </nav>
       )}
 
-      {/* Hero Section */}
       <section className="flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 lg:px-24 py-12">
-        {/* Left Section - Hero Content */}
         <div className="text-center lg:text-left max-w-lg">
           <h1 className="text-5xl font-bold">Explore System Design Concepts</h1>
           <p className="text-gray-600 mt-4">

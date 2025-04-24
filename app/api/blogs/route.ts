@@ -1,11 +1,18 @@
-import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import connectToDatabase from "@/lib/mongodb";
+import BlogModel from "@/models/Blog";
 
 export async function POST(request: NextRequest) {
   try {
-    const { title, description, content, coverImage } = await request.json();
+    // Connect to the database
+    await connectToDatabase();
+    
+    // Parse the JSON body
+    const body = await request.json();
     
     // Validate required fields
+    const { title, description, content, coverImage } = body;
+    
     if (!title || !description || !content || !coverImage) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -22,20 +29,21 @@ export async function POST(request: NextRequest) {
     }
     
     // Create blog post
-    const blog = await prisma.blog.create({
-      data: {
-        title,
-        description,
-        content,
-        coverImage,
-      },
+    const blog = await BlogModel.create({
+      title,
+      description,
+      content,
+      coverImage,
     });
     
     return NextResponse.json(blog, { status: 201 });
-  } catch (error) {
-    console.error("Error creating blog:", error);
+  } catch (err) {
+    // More robust error handling
+    const errorMessage = err instanceof Error ? err.message : "Failed to create blog post";
+    console.error("Error creating blog:", errorMessage);
+    
     return NextResponse.json(
-      { error: "Failed to create blog post" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -43,16 +51,20 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const blogs = await prisma.blog.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+    // Connect to the database
+    await connectToDatabase();
+    
+    const blogs = await BlogModel.find().sort({ createdAt: -1 });
     
     return NextResponse.json(blogs);
-  } catch (error) {
-    console.error("Error fetching blogs:", error);
+  } catch (err) {
+    // More robust error handling
+    const errorMessage = err instanceof Error ? err.message : "Failed to fetch blog posts";
+    console.error("Error fetching blogs:", errorMessage);
+    
     return NextResponse.json(
-      { error: "Failed to fetch blog posts" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
-} 
+}

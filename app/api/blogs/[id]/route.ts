@@ -1,5 +1,7 @@
-import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import connectToDatabase from "@/lib/mongodb";
+import BlogModel from "@/models/Blog";
+import mongoose from "mongoose";
 
 export async function GET(
   request: NextRequest,
@@ -16,10 +18,19 @@ export async function GET(
       );
     }
     
+    // Connect to the database
+    await connectToDatabase();
+    
+    // Check if ID is valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Invalid blog ID format" },
+        { status: 400 }
+      );
+    }
+    
     // Fetch blog post
-    const blog = await prisma.blog.findUnique({
-      where: { id },
-    });
+    const blog = await BlogModel.findById(id);
     
     if (!blog) {
       return NextResponse.json(

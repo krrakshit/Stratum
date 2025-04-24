@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 // Define the Blog schema
 const BlogSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    auto: true, // Auto-generate ObjectId
+    required: true
+  },
   title: {
     type: String,
     required: [true, 'Please provide a title for this blog post'],
@@ -28,6 +33,15 @@ const BlogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+}, {
+  // Enable virtual getters when converting to JSON
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Create a virtual for 'id' that returns _id as a string
+BlogSchema.virtual('id').get(function() {
+  return this._id.toHexString();
 });
 
 // Add updatedAt hook

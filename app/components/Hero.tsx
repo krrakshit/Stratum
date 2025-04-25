@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { IconCloudDemo } from "../components/SkillCloud";
 import { Menu, X, Moon, Sun } from "lucide-react";
+import Link from "next/link";
 
 type CodeIconProps = React.SVGProps<SVGSVGElement>;
 
@@ -71,9 +72,12 @@ const Hero = () => {
           <p className="text-gray-600 mt-4">
             A curated collection of system design patterns, architectures, and real-world case studies.
           </p>
+          <Link href="/blog">
           <button className="mt-6 px-6 py-3 bg-primary text-white rounded-lg shadow-lg hover:bg-opacity-90 transition">
             Browse Designs
           </button>
+          </Link>
+          
         </div>
 
         {/* Right Section - Skills Cloud */}

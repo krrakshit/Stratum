@@ -3,16 +3,20 @@ import connectToDatabase from "@/lib/mongodb";
 import BlogModel from "@/models/Blog";
 import mongoose from "mongoose";
 
-// Use the correct parameter name to match the file name
-type Params = { params: { _id: string } };
+interface RouteParams {
+  params: {
+    _id: string;
+  };
+}
 
+// Correct way to type params in Next.js app router API route
 export async function GET(
   request: NextRequest,
-  context: Params
+  { params }: RouteParams
 ) {
   try {
-    // Get the ID from the correct parameter name
-    const { _id } = context.params;
+    // Get the ID from the params object
+    const { _id } = params;
     
     // Validate ID
     if (!_id) {

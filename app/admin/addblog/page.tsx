@@ -73,7 +73,6 @@ const AddBlogPage = () => {
         throw new Error("Failed to create blog post");
       }
       
-      const data = await response.json();
       alert(`Blog post "${title}" created successfully!`);
       
       // Reset form

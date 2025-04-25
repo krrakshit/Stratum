@@ -3,12 +3,15 @@ import connectToDatabase from "@/lib/mongodb";
 import BlogModel from "@/models/Blog";
 import mongoose from "mongoose";
 
+type Params = { params: { id: string } };
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: Params
 ) {
   try {
-    const id = params.id;
+    // Properly await the params from context
+    const {  id } = context.params;
     
     // Validate ID
     if (!id) {

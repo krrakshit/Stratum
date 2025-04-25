@@ -3,18 +3,19 @@ import connectToDatabase from "@/lib/mongodb";
 import BlogModel from "@/models/Blog";
 import mongoose from "mongoose";
 
-type Params = { params: { id: string } };
+// Use the correct parameter name to match the file name
+type Params = { params: { _id: string } };
 
 export async function GET(
   request: NextRequest,
   context: Params
 ) {
   try {
-    // Properly await the params from context
-    const {  id } = context.params;
+    // Get the ID from the correct parameter name
+    const { _id } = context.params;
     
     // Validate ID
-    if (!id) {
+    if (!_id) {
       return NextResponse.json(
         { error: "Blog ID is required" },
         { status: 400 }
@@ -25,7 +26,7 @@ export async function GET(
     await connectToDatabase();
     
     // Check if ID is valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
       return NextResponse.json(
         { error: "Invalid blog ID format" },
         { status: 400 }
@@ -33,7 +34,7 @@ export async function GET(
     }
     
     // Fetch blog post
-    const blog = await BlogModel.findById(id);
+    const blog = await BlogModel.findById(_id);
     
     if (!blog) {
       return NextResponse.json(
@@ -50,4 +51,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}

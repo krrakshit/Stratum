@@ -13,7 +13,8 @@ interface Blog {
   createdAt: string;
 }
 
-export default function BlogPost({ params }: { params: { id: string } }) {
+// Update the params to match the file name
+export default function BlogPost({ params }: { params: { _id: string } }) {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,7 +24,8 @@ export default function BlogPost({ params }: { params: { id: string } }) {
     const fetchBlog = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/blogs/${params.id}`);
+        // Use the correct parameter name in the fetch URL
+        const response = await fetch(`/api/blogs/${params._id}`);
         
         if (!response.ok) {
           throw new Error("Failed to fetch blog post");
@@ -40,8 +42,9 @@ export default function BlogPost({ params }: { params: { id: string } }) {
     };
     
     fetchBlog();
-  }, [params.id]);
+  }, [params._id]);
   
+  // Rest of your component remains the same
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -104,4 +107,4 @@ export default function BlogPost({ params }: { params: { id: string } }) {
       </div>
     </div>
   );
-} 
+}

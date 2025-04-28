@@ -33,6 +33,13 @@ const BlogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  subHeadings: [
+    {
+      title: { type: String, required: true },
+      description: { type: String, required: true }
+    }
+  ],
+  categories: [{ type: String }]
 }, {
   // Enable virtual getters when converting to JSON
   toJSON: { virtuals: true },

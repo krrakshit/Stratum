@@ -13,6 +13,7 @@ const AddBlogPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [subHeadings, setSubHeadings] = useState([{ title: "", description: "" }]);
   const router = useRouter();
 
   useEffect(() => {
@@ -65,7 +66,8 @@ const AddBlogPage = () => {
           title,
           description,
           content,
-          coverImage
+          coverImage,
+          subHeadings
         }),
       });
       
@@ -81,6 +83,7 @@ const AddBlogPage = () => {
       setContent("");
       setCoverImage("");
       setImagePreview("");
+      setSubHeadings([{ title: "", description: "" }]);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

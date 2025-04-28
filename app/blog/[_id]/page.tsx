@@ -21,18 +21,23 @@ export default function BlogPost({ params }: { params: { _id: string } }) {
   const [imageError, setImageError] = useState(false);
   
   useEffect(() => {
+    // Try to load from cache first
+    const cached = localStorage.getItem(`blog_detail_${params._id}`);
+    if (cached) {
+      try {
+        setBlog(JSON.parse(cached));
+        setLoading(false);
+      } catch {}
+    }
+
+    // Always fetch from API in the background for freshness
     const fetchBlog = async () => {
       try {
-        setLoading(true);
-        // Use the correct parameter name in the fetch URL
         const response = await fetch(`/api/blogs/${params._id}`);
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch blog post");
-        }
-        
+        if (!response.ok) throw new Error("Failed to fetch blog post");
         const data = await response.json();
         setBlog(data);
+        localStorage.setItem(`blog_detail_${params._id}`, JSON.stringify(data));
       } catch (err) {
         console.error("Error fetching blog post:", err);
         setError(err instanceof Error ? err.message : "Failed to load blog post");
@@ -40,7 +45,7 @@ export default function BlogPost({ params }: { params: { _id: string } }) {
         setLoading(false);
       }
     };
-    
+
     fetchBlog();
   }, [params._id]);
   

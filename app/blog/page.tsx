@@ -15,18 +15,36 @@ export default function BlogsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
+  // Helper to compare blogs (by id and updated fields)
+  const areBlogsEqual = (a: Blog[], b: Blog[]) => {
+    return JSON.stringify(a) === JSON.stringify(b);
+  };
+
   useEffect(() => {
+    // 1. Try to load from localStorage first
+    const cached = localStorage.getItem("blogs_cache");
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setBlogs(parsed);
+        setLoading(false);
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    // 2. Fetch from API in the background
     const fetchBlogs = async () => {
       try {
-        setLoading(true);
         const response = await fetch("/api/blogs");
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch blogs");
-        }
-        
+        if (!response.ok) throw new Error("Failed to fetch blogs");
         const data = await response.json();
-        setBlogs(data);
+
+        // Only update if different from cache
+        if (!areBlogsEqual(data, blogs)) {
+          setBlogs(data);
+          localStorage.setItem("blogs_cache", JSON.stringify(data));
+        }
       } catch (err) {
         console.error("Error fetching blogs:", err);
         setError(err instanceof Error ? err.message : "Failed to load blogs");
@@ -34,9 +52,29 @@ export default function BlogsPage() {
         setLoading(false);
       }
     };
-    
+
     fetchBlogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  // Prefetch blog details in the background
+  useEffect(() => {
+    if (blogs.length === 0) return;
+
+    blogs.forEach((blog) => {
+      // Only prefetch if not already cached
+      if (!localStorage.getItem(`blog_detail_${blog.id}`)) {
+        fetch(`/api/blogs/${blog.id}`)
+          .then((res) => res.ok ? res.json() : null)
+          .then((data) => {
+            if (data) {
+              localStorage.setItem(`blog_detail_${blog.id}`, JSON.stringify(data));
+            }
+          })
+          .catch(() => {});
+      }
+    });
+  }, [blogs]);
   
   if (loading) {
     return (

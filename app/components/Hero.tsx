@@ -1,7 +1,7 @@
 "use client";
 import { TypewriterEffectSmooth } from "./typewriter-effect";
 import Link from "next/link";
-export function TypewriterEffectSmoothDemo() {
+export default function Hero() {
   const words = [
     {
       text: "Browse",

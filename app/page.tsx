@@ -1,13 +1,13 @@
 
 import "@fontsource/quicksand";
-import { TypewriterEffectSmoothDemo } from "./components/hero";
+import Hero from "./components/hero";
 
 
 export default function LandingPage() {
   return (
     <>
 
- <TypewriterEffectSmoothDemo/>
+    <Hero/>
     </>
   )
 }

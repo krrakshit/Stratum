@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/Landingpage';
+import LandingPage from './pages/LandingPage';
 import BlogsPage from './pages/Blogspage';
 import BlogPostPage from "./pages/Blogpostpage"
 import AdminLogin from './pages/Adminlogin';
-import AddBlogPage from './pages/AddBlogPage';
+import AddBlogPage from './pages/Addblogpage';
 
 function App() {
   return (

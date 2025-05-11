@@ -4,9 +4,13 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import blogRoutes from './routes/blog.js';
 import adminRoutes from './routes/admin.js';
+import path from "path";
+
 
 // Load environment variables
 dotenv.config();
+
+const __dirname = path.resolve();
 
 const app = express();
 const PORT = 5000;
@@ -32,6 +36,9 @@ const connectToDatabase = async () => {
 
 connectToDatabase();
 
+
+
+
 // Routes
 app.use('/api/blogs', blogRoutes);
 app.use('/api/admin', adminRoutes);
@@ -39,6 +46,11 @@ app.use('/api/admin', adminRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
 });
 
 // Start server

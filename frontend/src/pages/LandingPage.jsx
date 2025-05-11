@@ -19,7 +19,7 @@ export default function LandingPage() {
         <p className="text-gray-700 mb-6 max-w-xl mx-auto">
           Explore detailed breakdowns of real-world systems used by top tech companies.
         </p>
-        <a href="#designs" className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+        <a href="/blog" className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
           Browse Designs
         </a>
       </section>

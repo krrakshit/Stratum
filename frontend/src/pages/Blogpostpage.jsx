@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 function BlogPost() {
-  const { _id } = useParams();
+  const { id } = useParams();
   
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ function BlogPost() {
   
   useEffect(() => {
     // Try to load from cache first
-    const cached = localStorage.getItem(`blog_detail_${_id}`);
+    const cached = localStorage.getItem(`blog_detail_${id}`);
     if (cached) {
       try {
         setBlog(JSON.parse(cached));
@@ -21,11 +21,11 @@ function BlogPost() {
     // Always fetch from API in the background for freshness
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`/api/blogs/${_id}`);
+        const response = await fetch(`/api/blogs/${id}`);
         if (!response.ok) throw new Error("Failed to fetch blog post");
         const data = await response.json();
         setBlog(data);
-        localStorage.setItem(`blog_detail_${_id}`, JSON.stringify(data));
+        localStorage.setItem(`blog_detail_${id}`, JSON.stringify(data));
       } catch (err) {
         console.error("Error fetching blog post:", err);
         setError(err instanceof Error ? err.message : "Failed to load blog post");
@@ -34,7 +34,7 @@ function BlogPost() {
       }
     };
     fetchBlog();
-  }, [_id]);
+  }, [id]);
   
   // Rest of your component remains the same
   if (loading) {

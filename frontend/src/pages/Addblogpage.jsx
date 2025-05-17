@@ -12,7 +12,8 @@ const AddBlogPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [subHeadings, setSubHeadings] = useState([{ title: "", description: "" }]);
+  const [subHeadings, setSubHeadings] = useState([]);
+  const [currentSubHeading, setCurrentSubHeading] = useState({ title: "", description: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +38,27 @@ const AddBlogPage = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSubHeadingChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentSubHeading(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const addSubHeading = () => {
+    if (currentSubHeading.title && currentSubHeading.description) {
+      setSubHeadings(prev => [...prev, currentSubHeading]);
+      setCurrentSubHeading({ title: "", description: "" });
+    } else {
+      setError("Both title and description are required for subheadings");
+    }
+  };
+
+  const removeSubHeading = (index) => {
+    setSubHeadings(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -71,7 +93,8 @@ const AddBlogPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error("Failed to create blog post");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create blog post");
       }
       
       alert(`Blog post "${title}" created successfully!`);
@@ -82,7 +105,8 @@ const AddBlogPage = () => {
       setContent("");
       setCoverImage("");
       setImagePreview("");
-      setSubHeadings([{ title: "", description: "" }]);
+      setSubHeadings([]);
+      setCurrentSubHeading({ title: "", description: "" });
       
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -188,6 +212,67 @@ const AddBlogPage = () => {
             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+        </div>
+
+        <div className="border p-4 rounded-md">
+          <h3 className="text-lg font-medium mb-4">Subheadings (Optional)</h3>
+          
+          {subHeadings.length > 0 && (
+            <div className="mb-4 space-y-3">
+              <h4 className="font-medium">Added Subheadings:</h4>
+              {subHeadings.map((sh, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded">
+                  <div>
+                    <div className="font-medium">{sh.title}</div>
+                    <div className="text-sm text-gray-600">{sh.description}</div>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => removeSubHeading(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Subheading Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={currentSubHeading.title}
+                onChange={handleSubHeadingChange}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Subheading Description
+              </label>
+              <input
+                type="text"
+                name="description"
+                value={currentSubHeading.description}
+                onChange={handleSubHeadingChange}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
+            
+            <button
+              type="button"
+              onClick={addSubHeading}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 mt-2"
+            >
+              Add Subheading
+            </button>
+          </div>
         </div>
         
         <button

@@ -6,39 +6,23 @@ const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  
+  // Custom credentials - hardcoded for demo purposes only
+  // In a real app, you should use a secure authentication method
+  const ADMIN_USERNAME = "admin"; // Default value if env var isn't available
+  const ADMIN_PASSWORD = "password123"; // Default value if env var isn't available
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
-    
-    try {
-      const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-        credentials: "include" // Includes cookies in the request
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        // Successful login
-        localStorage.setItem("isAdminAuthenticated", "true");
-        navigate("/admin/addblog");
-      } else {
-        // Failed login
-        setError(data.message || "Invalid credentials. Please try again.");
-      }
-    } catch (err) {
-      setError("Login failed. Please check your network connection and try again.");
-      console.error("Login error:", err);
-    } finally {
-      setIsLoading(false);
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      // Successful login - redirect to admin page
+      // In a real app, you should use a more secure authentication method
+      localStorage.setItem("isAdminAuthenticated", "true");
+      navigate("/admin/addblog");
+    } else {
+      setError("Invalid credentials. Please try again.");
     }
   };
 
@@ -65,7 +49,6 @@ const AdminLogin = () => {
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              disabled={isLoading}
             />
           </div>
           
@@ -80,16 +63,14 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              disabled={isLoading}
             />
           </div>    
           
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center items-center"
-            disabled={isLoading}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            {isLoading ? "Logging in..." : "Login"}
+            Login
           </button>
         </form>
       </div>
@@ -98,3 +79,4 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
+

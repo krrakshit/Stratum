@@ -74,20 +74,20 @@ function BlogPost() {
         })}
       </div>
       
-      <div className="relative h-64 sm:h-96 w-full mb-8">
-        {!imageError ? (
-          <img
-            src={blog.coverImage}
-            alt={blog.title}
-            className="object-cover rounded-lg h-full w-full"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="h-full w-full bg-gray-200 flex items-center justify-center rounded-lg">
-            <span className="text-gray-400">Image unavailable</span>
-          </div>
-        )}
-      </div>
+      <div className="flex justify-center mb-8 overflow-hidden">
+  {!imageError ? (
+    <img
+      src={blog.coverImage}
+      alt={blog.title}
+      className="rounded-lg max-w-full h-auto"
+      onError={() => setImageError(true)}
+    />
+  ) : (
+    <div className="h-64 w-full bg-gray-200 flex items-center justify-center rounded-lg">
+      <span className="text-gray-400">Image unavailable</span>
+    </div>
+  )}
+</div>
       
       <div className="prose max-w-none mb-10">
         {blog.content.split('\n').map((paragraph, index) => (
